@@ -1,0 +1,138 @@
+package reportes;
+
+import org.apache.poi.hssf.usermodel.*;
+
+import java.util.List;
+import org.apache.poi.hssf.util.HSSFColor;
+
+public class ExcelGenerator {
+
+    // Excel work book
+    private HSSFWorkbook workbook;
+
+    // Fonts
+    private HSSFFont headerFont;
+    private HSSFFont contentFont;
+
+    // Styles
+    private HSSFCellStyle headerStyle;
+    private HSSFCellStyle oddRowStyle;
+    private HSSFCellStyle evenRowStyle;
+
+    // Integer to store the index of the next row
+    private int rowIndex;
+
+    /**
+     * Make a new excel workbook with sheet that contains a stylized table
+     *
+     * @param sheetName     Name of the sheet
+     * @param tableHeaders  List of column headers
+     * @param tableContent  List of rows containing the table data
+     * @return Generated HSSFWorkbook
+     */
+    public HSSFWorkbook generateExcel(String sheetName, List<String> tableHeaders, List<List<String>> tableContent) {
+
+        // Initialize rowIndex
+        rowIndex = 0;
+
+        // New Workbook
+        workbook = new HSSFWorkbook();
+
+        // Generate fonts
+        headerFont = createFont(HSSFColor.WHITE.index, (short) 14, true);
+        contentFont = createFont(HSSFColor.BLACK.index, (short) 10, true);
+
+        // Generate styles
+        headerStyle = createStyle(headerFont, HSSFCellStyle.ALIGN_CENTER, HSSFColor.BLUE.index, true, HSSFColor.WHITE.index);
+        oddRowStyle = createStyle(contentFont, HSSFCellStyle.ALIGN_LEFT, HSSFColor.GREY_25_PERCENT.index, true, HSSFColor.GREY_80_PERCENT.index);
+        evenRowStyle = createStyle(contentFont, HSSFCellStyle.ALIGN_LEFT, HSSFColor.GREY_40_PERCENT.index, true, HSSFColor.GREY_80_PERCENT.index);
+
+        // New sheet
+        HSSFSheet sheet = workbook.createSheet(sheetName);
+
+        // Table header
+        HSSFRow headerRow = sheet.createRow(rowIndex++);
+        HSSFCell headerCell = null;
+        for (int i = 0; i < tableHeaders.size(); i++) {
+            headerCell = headerRow.createCell(i);
+            headerCell.setCellStyle(headerStyle);
+            headerCell.setCellValue(tableHeaders.get(i));
+        }
+
+        // Table content
+        HSSFRow contentRow = null;
+        HSSFCell contentCell = null;
+        for (List<String> rowValues : tableContent) {
+
+            // At each row creation, rowIndex must grow one unit
+            contentRow = sheet.createRow(rowIndex++);
+            for (int i = 0; i < rowValues.size(); i++) {
+                contentCell = contentRow.createCell(i);
+                contentCell.setCellValue(rowValues.get(i));
+
+                // Style depends on if row is odd or even
+                contentCell.setCellStyle(rowIndex % 2 == 0 ? oddRowStyle : evenRowStyle);
+            }
+        }
+
+        // Autosize columns
+        for (int i = 0; i < tableHeaders.size(); sheet.autoSizeColumn(i++));
+
+        return workbook;
+    }
+
+    /**
+     * Create a new font on base workbook
+     *
+     * @param fontColor  Font color (see {@link HSSFColor})
+     * @param fontHeight Font height in points
+     * @param fontBold   Font is boldweight (<code>true</code>) or not
+     *                   (<code>false</code>)
+     * @return New cell style
+     */
+    private HSSFFont createFont(short fontColor, short fontHeight, boolean fontBold) {
+
+        HSSFFont font = workbook.createFont();
+        font.setBold(fontBold);
+        font.setColor(fontColor);
+        font.setFontName("Arial");
+        font.setFontHeightInPoints(fontHeight);
+
+        return font;
+    }
+
+    /**
+     * Create a style on base workbook
+     *
+     * @param font             Font used by the style
+     * @param cellAlign        Cell alignment for contained text (see
+     *                         {@link HSSFCellStyle})
+     * @param cellColor        Cell background color (see {@link HSSFColor})
+     * @param cellBorder       Cell has border (<code>true</code>) or not
+     *                         (<code>false</code>)
+     * @param cellBorderColor  Cell border color (see {@link HSSFColor})
+     * @return New cell style
+     */
+    private HSSFCellStyle createStyle(HSSFFont font, short cellAlign, short cellColor, boolean cellBorder, short cellBorderColor) {
+
+        HSSFCellStyle style = workbook.createCellStyle();
+        style.setFont(font);
+        style.setAlignment(cellAlign);
+        style.setFillForegroundColor(cellColor);
+        style.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);
+
+        if (cellBorder) {
+            style.setBorderTop(HSSFCellStyle.BORDER_THIN);
+            style.setBorderLeft(HSSFCellStyle.BORDER_THIN);
+            style.setBorderRight(HSSFCellStyle.BORDER_THIN);
+            style.setBorderBottom(HSSFCellStyle.BORDER_THIN);
+
+            style.setTopBorderColor(cellBorderColor);
+            style.setLeftBorderColor(cellBorderColor);
+            style.setRightBorderColor(cellBorderColor);
+            style.setBottomBorderColor(cellBorderColor);
+        }
+
+        return style;
+    }
+}

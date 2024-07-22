@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?><sqlb_project><db path="C:/Users/Kevscl/Desktop/SistemaDeVentas2/sivenleo.db" readonly="0" foreign_keys="0" case_sensitive_like="0" temp_store="0" wal_autocheckpoint="0" synchronous="1"/><attached/><window><main_tabs open="structure browser pragmas query" current="3"/></window><tab_structure><column_width id="0" width="300"/><column_width id="1" width="0"/><column_width id="2" width="100"/><column_width id="3" width="4080"/><column_width id="4" width="0"/><expanded_item id="0" parent="1"/><expanded_item id="1" parent="1"/><expanded_item id="2" parent="1"/><expanded_item id="3" parent="1"/></tab_structure><tab_browse><current_table name="4,9:mainCATEGORIA"/><default_encoding codec=""/><browse_table_settings><table schema="main" name="CATEGORIA" show_row_id="0" encoding="" plot_x_axis="" unlock_view_pk="_rowid_"><sort/><column_widths><column index="1" value="82"/><column index="2" value="98"/></column_widths><filter_values/><conditional_formats/><row_id_formats/><display_formats/><hidden_columns/><plot_y_axes/><global_filter/></table></browse_table_settings></tab_browse><tab_sql><sql name="SQL 1">CREATE VIEW VistaVentaPagos AS
+SELECT v.idVenta, e.usuario AS usuarioEmpleado,
+       COALESCE(c.nomCliente || ' ' || c.ape1Cliente || ' ' || c.ape2Cliente, pv.nombreClienteNoRegistrado) AS nombreCliente,
+       pv.nombreClienteNoRegistrado ,v.fecha, v.mPago, v.total,
+       COALESCE(SUM(pv.monto), 0) AS totalPagado
+FROM VENTA v
+INNER JOIN EMPLEADO e ON v.idEmpleado = e.idEmpleado
+LEFT JOIN CLIENTE c ON v.idCliente = c.idCliente
+LEFT JOIN PAGO_VENTA pv ON v.idVenta = pv.idVenta
+WHERE v.mPago = 'Pago a plazos.'
+GROUP BY v.idVenta, e.usuario, c.nomCliente, c.ape1Cliente, c.ape2Cliente, v.fecha, v.mPago, v.total, pv.nombreClienteNoRegistrado
+HAVING COALESCE(SUM(pv.monto), 0) &lt; v.total;
+select * from VistaVentaPagos;
+
+select * from VistaVentaPagos;
+
+
+select * from PAGO_VENTA;</sql><current_tab id="0"/></tab_sql></sqlb_project>

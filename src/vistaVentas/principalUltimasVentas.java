@@ -1,0 +1,527 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JPanel.java to edit this template
+ */
+package vistaVentas;
+
+import ajustes.Reset;
+import bo.VentaBO;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.util.Date;
+import java.util.List;
+import javax.swing.AbstractAction;
+import javax.swing.Action;
+import javax.swing.JComponent;
+import javax.swing.JOptionPane;
+import javax.swing.KeyStroke;
+import javax.swing.SwingWorker;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import necesario.RSFileChooser;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import reportes.ExcelGenerator;
+import reportes.FakeDataProvider;
+import reportes.GeneraReporte;
+import rojerusan.RSNotifyFade;
+
+/**
+ *
+ * @author Kevscl
+ */
+public class principalUltimasVentas extends javax.swing.JPanel {
+
+    /**
+     * Creates new form principalUltimasVentas
+     */
+    VentaBO vbo = new VentaBO();
+
+    public principalUltimasVentas() {
+        initComponents();
+        listarTotal();
+        jPopupMenu1.add(menu);
+    }
+
+    private void addEventKey() {
+
+        KeyStroke f1 = KeyStroke.getKeyStroke(KeyEvent.VK_F1, 0, false);
+        Action f1Action = new AbstractAction() {
+            public void actionPerformed(ActionEvent e) {
+                buscar();
+            }
+        };
+        this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(f1, "F1");
+        this.getActionMap().put("F1", f1Action);
+
+        //---------------------------------------------------------------------------
+        KeyStroke f2 = KeyStroke.getKeyStroke(KeyEvent.VK_F2, 0, false);
+        Action f2Action = new AbstractAction() {
+            public void actionPerformed(ActionEvent e) {
+                eliminarTodo();
+            }
+        };
+        this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(f2, "F2");
+        this.getActionMap().put("F2", f2Action);
+
+        //------------------------------------------------------------------------------
+        KeyStroke f3 = KeyStroke.getKeyStroke(KeyEvent.VK_F3, 0, false);
+        Action f3Action = new AbstractAction() {
+            public void actionPerformed(ActionEvent e) {
+                pagos();
+            }
+        };
+        this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(f3, "F3");
+        this.getActionMap().put("F3", f3Action);
+
+    }
+
+    public void listarTotal() {
+        vbo.listarVenta(tbVentas);
+    }
+
+    public void listar() {
+        //vbo.listarVenta(tbVentas);
+        LocalDate fechaActual = LocalDate.now();
+
+        // Convertir LocalDate a Date
+        Date date = java.sql.Date.valueOf(fechaActual);
+
+        // Definir el formato deseado
+        SimpleDateFormat formatoFecha = new SimpleDateFormat("yyyy/MM/dd");
+
+        // Obtener la fecha formateada como una cadena
+        String fecha = formatoFecha.format(date);
+        //System.out.println(fecha);
+        try {
+            Date dateFormateado = formatoFecha.parse(fecha);
+            dateFecha.setDate(dateFormateado);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        Date fechaSeleccionada = dateFecha.getDate();
+        SimpleDateFormat formato = new SimpleDateFormat("yyyy/MM/dd");
+        String fechaFormateada = formato.format(fechaSeleccionada);
+        String mensaje = vbo.listarVentaBusqueda(tbVentas, fechaFormateada);
+    }
+
+    public void ultimasVentas() {
+        Date fechaSeleccionada = dateFecha.getDate();
+        SimpleDateFormat formato = new SimpleDateFormat("yyyy/MM/dd");
+        String fechaFormateada = formato.format(fechaSeleccionada);
+        String mensaje = vbo.listarVentaBusqueda(tbVentas, fechaFormateada);
+    }
+
+    public void devolucion() {
+        int fila = tbVentas.getSelectedRow();
+        if (fila != -1) {
+            DevolucionAgregar c = new DevolucionAgregar();
+            c.txtIdVenta.setText(tbVentas.getValueAt(fila, 1).toString());
+            c.txtProducto.setText(tbVentas.getValueAt(fila, 4).toString());
+            c.txtCantidad.setText(tbVentas.getValueAt(fila, 5).toString());
+            // Asignar el valor seleccionado en el campo comboGenero
+            c.setAlwaysOnTop(true); // Mantener la ventana emergente en la capa superior
+            c.setVisible(true);
+            tbVentas.clearSelection();
+            jPopupMenu1.setVisible(false);
+        } else {
+            listar();
+        }
+    }
+
+    /**
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
+     * regenerated by the Form Editor.
+     */
+    @SuppressWarnings("unchecked")
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    private void initComponents() {
+
+        menu = new javax.swing.JPanel();
+        btnDevolucion = new RSMaterialComponent.RSButtonMaterialIconTwo();
+        jPopupMenu1 = new javax.swing.JPopupMenu();
+        jPanel1 = new javax.swing.JPanel();
+        jPanel2 = new javax.swing.JPanel();
+        rSLabelTextIcon1 = new RSMaterialComponent.RSLabelTextIcon();
+        rSLabelHora1 = new rojeru_san.rsdate.RSLabelHora();
+        btnBuscar = new RSMaterialComponent.RSButtonMaterialIconTwo();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        tbVentas = new RSMaterialComponent.RSTableMetroCustom();
+        rSButtonMaterialIconTwo3 = new RSMaterialComponent.RSButtonMaterialIconTwo();
+        dateFecha = new newscomponents.RSDateChooserModern();
+        rSButtonMaterialIconTwo4 = new RSMaterialComponent.RSButtonMaterialIconTwo();
+        btnPDF = new RSMaterialComponent.RSButtonMaterialIconTwo();
+        btnExcel = new newscomponents.RSButtonFlat_new();
+        txtBusqeuda = new RSMaterialComponent.RSTextFieldIconOne();
+
+        menu.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        btnDevolucion.setText("DEVOLVER (F1)");
+        btnDevolucion.setIcons(rojeru_san.efectos.ValoresEnum.ICONS.DETAILS);
+        btnDevolucion.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDevolucionActionPerformed(evt);
+            }
+        });
+        menu.add(btnDevolucion, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, -1));
+
+        jPopupMenu1.getAccessibleContext().setAccessibleParent(menu);
+
+        setLayout(new java.awt.GridLayout(1, 0));
+
+        jPanel1.setBackground(new java.awt.Color(255, 255, 255));
+
+        jPanel2.setBackground(new java.awt.Color(58, 159, 171));
+
+        rSLabelTextIcon1.setForeground(new java.awt.Color(255, 255, 255));
+        rSLabelTextIcon1.setText("ÚLTIMAS VENTAS");
+        rSLabelTextIcon1.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        rSLabelTextIcon1.setIcons(rojeru_san.efectos.ValoresEnum.ICONS.STORE);
+
+        rSLabelHora1.setForeground(new java.awt.Color(255, 255, 255));
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addComponent(rSLabelTextIcon1, javax.swing.GroupLayout.PREFERRED_SIZE, 241, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(rSLabelHora1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(rSLabelTextIcon1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(rSLabelHora1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+        );
+
+        btnBuscar.setBackground(new java.awt.Color(58, 159, 171));
+        btnBuscar.setText("CONSULTAR (F1)");
+        btnBuscar.setIcons(rojeru_san.efectos.ValoresEnum.ICONS.EVENT_AVAILABLE);
+        btnBuscar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBuscarActionPerformed(evt);
+            }
+        });
+
+        tbVentas.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {},
+                {},
+                {},
+                {}
+            },
+            new String [] {
+
+            }
+        ));
+        tbVentas.setBackgoundHead(new java.awt.Color(58, 159, 171));
+        tbVentas.setBackgoundHover(new java.awt.Color(58, 159, 171));
+        tbVentas.setColorPrimaryText(new java.awt.Color(38, 86, 186));
+        tbVentas.setColorSecundaryText(new java.awt.Color(38, 86, 186));
+        tbVentas.setSelectionBackground(new java.awt.Color(58, 159, 171));
+        tbVentas.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                tbVentasMouseReleased(evt);
+            }
+        });
+        jScrollPane1.setViewportView(tbVentas);
+
+        rSButtonMaterialIconTwo3.setBackground(new java.awt.Color(58, 159, 171));
+        rSButtonMaterialIconTwo3.setText("PAGOS PENDIENTES (F3)");
+        rSButtonMaterialIconTwo3.setIcons(rojeru_san.efectos.ValoresEnum.ICONS.ERROR);
+        rSButtonMaterialIconTwo3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                rSButtonMaterialIconTwo3ActionPerformed(evt);
+            }
+        });
+
+        dateFecha.setBackground(new java.awt.Color(58, 159, 171));
+
+        rSButtonMaterialIconTwo4.setBackground(new java.awt.Color(58, 159, 171));
+        rSButtonMaterialIconTwo4.setText("ELIMINAR VENTAS (F2)");
+        rSButtonMaterialIconTwo4.setIcons(rojeru_san.efectos.ValoresEnum.ICONS.ERROR);
+        rSButtonMaterialIconTwo4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                rSButtonMaterialIconTwo4ActionPerformed(evt);
+            }
+        });
+
+        btnPDF.setBackground(new java.awt.Color(58, 159, 171));
+        btnPDF.setIcon(new javax.swing.ImageIcon(getClass().getResource("/reportes/btnExcel.png"))); // NOI18N
+        btnPDF.setText("(F2)");
+        btnPDF.setBorderPainted(false);
+        btnPDF.setIcons(rojeru_san.efectos.ValoresEnum.ICONS.PRINT);
+        btnPDF.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnPDFActionPerformed(evt);
+            }
+        });
+
+        btnExcel.setBackground(new java.awt.Color(58, 159, 171));
+        btnExcel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/reportes/btnExcel.png"))); // NOI18N
+        btnExcel.setText("(F3)");
+        btnExcel.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnExcelActionPerformed(evt);
+            }
+        });
+
+        txtBusqeuda.setForeground(new java.awt.Color(58, 159, 171));
+        txtBusqeuda.setBorderColor(new java.awt.Color(58, 159, 171));
+        txtBusqeuda.setColorIcon(new java.awt.Color(58, 159, 171));
+        txtBusqeuda.setIcons(rojeru_san.efectos.ValoresEnum.ICONS.SEARCH);
+        txtBusqeuda.setPlaceholder("BUSCAR");
+        txtBusqeuda.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txtBusqeudaKeyReleased(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(txtBusqeuda, javax.swing.GroupLayout.PREFERRED_SIZE, 431, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(dateFecha, javax.swing.GroupLayout.PREFERRED_SIZE, 245, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(btnBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 175, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(rSButtonMaterialIconTwo4, javax.swing.GroupLayout.PREFERRED_SIZE, 211, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(rSButtonMaterialIconTwo3, javax.swing.GroupLayout.PREFERRED_SIZE, 227, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(btnPDF, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(btnExcel, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(0, 8, Short.MAX_VALUE)))
+                .addContainerGap())
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(rSButtonMaterialIconTwo4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(rSButtonMaterialIconTwo3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnPDF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnExcel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(dateFecha, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(6, 6, 6)
+                .addComponent(txtBusqeuda, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 315, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+
+        add(jPanel1);
+    }// </editor-fold>//GEN-END:initComponents
+
+    private void tbVentasMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tbVentasMouseReleased
+        if (evt.isPopupTrigger()) {
+            // Obtener la fila seleccionada
+            int fila = tbVentas.getSelectedRow();
+            // Verificar si se ha seleccionado una fila
+            if (fila != -1) {
+                // Mostrar el JPopupMenu en la posición del clic
+                jPopupMenu1.show(evt.getComponent(), evt.getX(), evt.getY());
+            } else {
+                //listar();
+                jPopupMenu1.setVisible(false);
+            }
+        }
+    }//GEN-LAST:event_tbVentasMouseReleased
+
+    private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarActionPerformed
+        buscar();
+    }//GEN-LAST:event_btnBuscarActionPerformed
+
+    private void btnDevolucionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDevolucionActionPerformed
+        devolucion();
+    }//GEN-LAST:event_btnDevolucionActionPerformed
+
+    private void rSButtonMaterialIconTwo3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rSButtonMaterialIconTwo3ActionPerformed
+        pagos();
+    }//GEN-LAST:event_rSButtonMaterialIconTwo3ActionPerformed
+
+    private void rSButtonMaterialIconTwo4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rSButtonMaterialIconTwo4ActionPerformed
+        eliminarTodo();
+    }//GEN-LAST:event_rSButtonMaterialIconTwo4ActionPerformed
+
+    private void btnPDFActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPDFActionPerformed
+        pdf();
+    }//GEN-LAST:event_btnPDFActionPerformed
+
+    private void btnExcelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExcelActionPerformed
+        exportar();
+    }//GEN-LAST:event_btnExcelActionPerformed
+
+    private void txtBusqeudaKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtBusqeudaKeyReleased
+        vbo.listarVentaReporteTotalBusqueda(tbVentas, txtBusqeuda.getText());
+    }//GEN-LAST:event_txtBusqeudaKeyReleased
+
+    public void buscar() {
+        Date fechaSeleccionada = dateFecha.getDate();
+        SimpleDateFormat formato = new SimpleDateFormat("yyyy/MM/dd");
+        String fechaFormateada = formato.format(fechaSeleccionada);
+        String mensaje = vbo.listarVentaBusqueda(tbVentas, fechaFormateada);
+        if (!mensaje.equals("VENTAS ENCONTRADAS")) {
+            new rojerusan.RSNotifyFade("¡ERROR!", "¡No hay ventas disponibles!", 3, RSNotifyFade.PositionNotify.BottomRight, RSNotifyFade.TypeNotify.WARNING).setVisible(true);
+            listarTotal();
+        } else {
+
+        }
+    }
+
+    public void pagos() {
+        PagosPendientes c = new PagosPendientes();
+        c.setVisible(true);
+    }
+
+    public void eliminarTodo() {
+        int resp = JOptionPane.showConfirmDialog(null, "¿Esta seguro de eliminar todos los registros?", "Alerta!", JOptionPane.YES_NO_OPTION, JOptionPane.ERROR_MESSAGE);
+        if (resp == 0) {
+            Reset r = new Reset();
+            r.eliminarVentas();
+            new rojerusan.RSNotifyFade("¡SUCCESS!", "¡Registros eliminados con Éxito!", 5, RSNotifyFade.PositionNotify.BottomRight, RSNotifyFade.TypeNotify.SUCCESS).setVisible(true);
+            listar();
+        }
+        tbVentas.clearSelection();
+        jPopupMenu1.setVisible(false);
+    }
+
+     public void pdf() {
+        String tableName = "Últimas ventas"; // Cambiar por el nombre de la tabla o vista que deseas mostrar
+        String description = "Listado de ventas"; // Cambiar por una descripción adecuada
+
+        RSFileChooser fileChooser = new RSFileChooser();
+        FileNameExtensionFilter filter = new FileNameExtensionFilter("Archivos PDF (*.pdf)", "pdf");
+        fileChooser.setAcceptAllFileFilterUsed(false);
+        fileChooser.setFileFilter(filter);
+        fileChooser.setDialogTitle("GUARDAR ARCHIVO");
+        if (fileChooser.showSaveDialog(null) == RSFileChooser.APPROVE_OPTION) {
+            String filePath = fileChooser.getSelectedFile().getAbsolutePath();
+            if (!filePath.toLowerCase().endsWith(".pdf")) {
+                filePath += ".pdf"; // Agrega extensión .pdf si no está presente
+            }
+            GeneraReporte g = new GeneraReporte();
+            String mensaje = g.generaPDFTabla(tableName, description, filePath, tbVentas);
+            if (!mensaje.equals("PDF GENERADO")) {
+                new rojerusan.RSNotifyFade("¡ERROR!", "¡Error al generar PDF!", 3, RSNotifyFade.PositionNotify.BottomRight, RSNotifyFade.TypeNotify.WARNING).setVisible(true);
+            } else {
+                new rojerusan.RSNotifyFade("¡SUCCESS!", "¡PDF Generado exitosamente!", 3, RSNotifyFade.PositionNotify.BottomRight, RSNotifyFade.TypeNotify.SUCCESS).setVisible(true);
+            }
+        }
+    }
+    
+    public void exportar() {
+        List<String> headers = FakeDataProvider.getTableHeaders(tbVentas);
+        int tam = tbVentas.getRowCount();
+        List<List<String>> content = FakeDataProvider.getTableContent(tbVentas, tam); // Obtén los datos de las primeras 20 filas
+
+        ExcelGenerator excelGenerator = new ExcelGenerator();
+        HSSFWorkbook workbook = excelGenerator.generateExcel("PERSONAS", headers, content);
+
+        RSFileChooser fileChooser = new RSFileChooser();
+        FileNameExtensionFilter filter = new FileNameExtensionFilter("Archivos Excel (*.xls)", "xls");
+        fileChooser.setAcceptAllFileFilterUsed(false);
+        fileChooser.setFileFilter(filter);
+        fileChooser.setDialogTitle("GUARDAR ARCHIVO");
+        if (fileChooser.showSaveDialog(this) == RSFileChooser.APPROVE_OPTION) {
+            System.out.println(fileChooser.getSelectedFile().getAbsolutePath());
+
+            File archivo = new File(fileChooser.getSelectedFile().getAbsolutePath());
+
+            SwingWorker<Void, Void> worker = new SwingWorker<Void, Void>() {
+                @Override
+                protected Void doInBackground() throws Exception {
+                    try {
+                        OutputStream out = null;
+                        if (getFileExtension(archivo)) {
+                            out = new FileOutputStream(fileChooser.getSelectedFile().getAbsolutePath());
+                        } else {
+                            out = new FileOutputStream(fileChooser.getSelectedFile().getAbsolutePath() + ".xls");
+                        }
+                        workbook.write(out);
+                        workbook.close();
+                        out.flush();
+                        out.close();
+                    } catch (FileNotFoundException ex) {
+                        showErrorAlert("Algo salió mal. El archivo que intenta sobreescribir se encuentra abierto, cierre el archivo e inténtelo de nuevo.");
+                    } catch (IOException ex) {
+                        showErrorAlert("Algo salió mal. No fue posible generar el archivo.");
+                    }
+                    return null;
+                }
+
+                @Override
+                protected void done() {
+                    showSuccessAlert("Archivo guardado con éxito.");
+                }
+            };
+            worker.execute();
+        }
+
+    }
+
+    private void showErrorAlert(String mensaje) {
+        new rojerusan.RSNotifyFade("¡ERROR!", "¡" + mensaje + "!", 3, RSNotifyFade.PositionNotify.BottomRight, RSNotifyFade.TypeNotify.WARNING).setVisible(true);
+
+    }
+
+    // Método para mostrar un cuadro de diálogo de éxito
+    private void showSuccessAlert(String mensaje) {
+        new rojerusan.RSNotifyFade("¡SUCCESS!", "¡" + mensaje + "!", 5, RSNotifyFade.PositionNotify.BottomRight, RSNotifyFade.TypeNotify.SUCCESS).setVisible(true);
+    }
+
+    private boolean getFileExtension(File file) {
+        String ext = null;
+        String s = file.getName();
+        int i = s.lastIndexOf('.');
+
+        if (i > 0 && i < s.length() - 1) {
+            ext = s.substring(i + 1).toLowerCase();
+        }
+
+        if (ext != null) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private RSMaterialComponent.RSButtonMaterialIconTwo btnBuscar;
+    private RSMaterialComponent.RSButtonMaterialIconTwo btnDevolucion;
+    private newscomponents.RSButtonFlat_new btnExcel;
+    private RSMaterialComponent.RSButtonMaterialIconTwo btnPDF;
+    private newscomponents.RSDateChooserModern dateFecha;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JPopupMenu jPopupMenu1;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JPanel menu;
+    private RSMaterialComponent.RSButtonMaterialIconTwo rSButtonMaterialIconTwo3;
+    private RSMaterialComponent.RSButtonMaterialIconTwo rSButtonMaterialIconTwo4;
+    private rojeru_san.rsdate.RSLabelHora rSLabelHora1;
+    private RSMaterialComponent.RSLabelTextIcon rSLabelTextIcon1;
+    private RSMaterialComponent.RSTableMetroCustom tbVentas;
+    private RSMaterialComponent.RSTextFieldIconOne txtBusqeuda;
+    // End of variables declaration//GEN-END:variables
+}
